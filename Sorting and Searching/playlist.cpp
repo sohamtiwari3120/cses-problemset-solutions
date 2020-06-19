@@ -54,24 +54,27 @@ void solve() {
 	int n;
 	cin >> n;
 
-	ll a[n], ans = 0, l = 0, num;
+	int ans = 0, num;
 
-	unordered_map<ll,ll> m;
+	map<int,int> m;
+	queue<int> q;
 
 	rep(i,n) {
-		cin >> a[i];
-		num = a[i];
-		m[num]++;
+		cin >> num;
+		q.push(num);
 
-		if(m[num] > 1) {
-			while(a[l] != num) {
-				l++;
+		if(m[num] > 0) {
+			while(q.front() != num) {
+				m[q.front()]--;
+				q.pop();
 			}
-			l++;
-			m[num]--;
+			m[q.front()]--;
+			q.pop();
 		}
-
-		ans = max(ans,i-l+1);
+		
+		m[num]++;
+		int x = q.size();
+		ans = max(ans,x);
 	}
 
 	p1(ans);
