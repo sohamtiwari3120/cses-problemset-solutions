@@ -54,22 +54,23 @@ void solve() {
 	int n;
 	cin >> n;
 
-	ll a[n], ans = 0, l = 0;
+	ll a[n], ans = 0, l = 0, num;
 
-	unordered_map<int,int> m;
+	unordered_map<ll,ll> m;
 
 	rep(i,n) {
-		int num;
-		cin >> num;
+		cin >> a[i];
+		num = a[i];
+		m[num]++;
 
-		if(m[num] > 0) {
+		if(m[num] > 1) {
+			while(a[l] != num) {
+				l++;
+			}
 			l++;
 			m[num]--;
 		}
 
-		p2(l,i);
-
-		m[num]++;
 		ans = max(ans,i-l+1);
 	}
 

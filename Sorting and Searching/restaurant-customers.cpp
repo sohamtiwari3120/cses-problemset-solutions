@@ -61,20 +61,26 @@ void solve() {
 	int n, st, et, curr = 0, ans = 0;
 	cin >> n;
 
-	vector<int> v(n+1,0);
-
+	priority_queue<ll,vector<ll>,greater<ll>> start, end;
 
 	rep(i,n) {
-		cin >> st >> et;
-		v[st] = 1;
-		v[et] = -1;		
+		ll st, et;
+		cin >> st >> et;;
+		start.push(st);
+		end.push(et);
 	}
 
-	repe(i,n) {
-		curr += v[i];
-		if(v[i] == 1) {
-			ans = max(ans,curr);
+	while(!start.empty()) {
+		ll st = start.top();
+		start.pop();
+
+		while(end.top() <= st) {
+			curr--;
+			end.pop();
 		}
+
+		curr++;
+		ans = max(ans,curr);
 	}
 
 	p1(ans);
