@@ -15,6 +15,8 @@ using namespace std;
 #define endl "\n"
 #define pii pair<int,int> 
 #define pll pair < long long, long long >
+typedef priority_queue<ll, vector<ll>, greater<ll>> minheap;
+typedef priority_queue<ll> maxheap;
 #define fastio ios_base::sync_with_stdio(false);cin.tie(NULL)
 #define p0(a) cout << a << " "
 #define p1(a) cout << a << endl
@@ -36,72 +38,62 @@ ll modPower(ll num,ll r){
 }
 
 ll nCr(ll n, ll r) { 
-	ll res = 1; 
-	if (r > n - r) {
-		r = n - r; 
-	}
-	rep(i,r) { 
-		res *= (n - i); 
-		res /= (i + 1); 
-	} 
-	return res; 
+    ll res = 1; 
+    if (r > n - r) {
+        r = n - r; 
+    }
+    rep(i,r) { 
+        res *= (n - i); 
+        res /= (i + 1); 
+    } 
+    return res; 
 }
+
+bool isPrime(long long n)
+{
+    if (n <= 1) return false;
+    if (n <= 3) return true;
+    if (n % 2 == 0 || n % 3 == 0) return false;
+ 
+    for (int i = 5; i * i <= n; i = i + 6)
+        if (n % i == 0 || n % (i + 2) == 0)
+            return false;
+ 
+    return true;
+}
+
 
 /*-------------------------------------------------*/
 
-class Number
-{
-public:
-	ll num;
-	int x;
-	int y;
-};
-
 void solve() {
 
-	int n, x, num;
-	cin >> n >> x;
-	ll a[n];
-	vector<Number> v;
+	ll n, a, b, sz = INT_MIN;
+	cin >> n;
+
+	queue<pll> q;
 
 	rep(i,n) {
-		cin >> a[i];
+		cin >> a >> b;
+		q.push({a,b});
+		sz = max(sz,a);
 	}
 
-	rep(i,n-1) {
-		repb(j,i+1,n) {
-			v.pb({a[i]+a[j],i+1,j+1});
-		}
+	ll fac[sz + 1];
+	fac[0] = fac[1] = 1;
+
+	repeb(i,2,sz) {
+		fac[i] = (i * fac[i - 1]) % MOD;
+		p1(fac[i]);
 	}
 
-	sortby(a,num);
-
-			ll sum = x - a[i].fi - a[j].fi, l = 0, h = n - 1;
-
-			while(l < h) {
-				if(l == i || l == j) {
-					l++;
-					continue;
-				} else if(h == i || h == j) {
-					h--;
-					continue;
-				}
-
-				ll num = a[l].fi + a[h].fi;
-				if(num == sum) {
-					p4(a[i].se+1,a[j].se+1,a[l].se+1,a[h].se+1);
-					return;
-				} else if(num > sum) {
-					h--;
-				} else {
-					l++;
-				}
-			}
-
-		}
-	}
-
-	p1("IMPOSSIBLE");
+	// while(!q.empty()) {
+	// 	pll p = q.front();
+	// 	q.pop();
+	// 	ll num = fac[p.fi] % MOD;
+	// 	ll denom = ((fac[p.fi - p.se] % MOD) * (fac[p.se] % MOD)) % MOD;
+	// 	ll ans = num / denom;
+	// 	p1(ans);
+	// }
 
 }
 
