@@ -15,6 +15,8 @@ using namespace std;
 #define endl "\n"
 #define pii pair<int,int> 
 #define pll pair < long long, long long >
+typedef priority_queue<ll, vector<ll>, greater<ll>> minheap;
+typedef priority_queue<ll> maxheap;
 #define fastio ios_base::sync_with_stdio(false);cin.tie(NULL)
 #define p0(a) cout << a << " "
 #define p1(a) cout << a << endl
@@ -36,70 +38,53 @@ ll modPower(ll num,ll r){
 }
 
 ll nCr(ll n, ll r) { 
-	ll res = 1; 
-	if (r > n - r) {
-		r = n - r; 
-	}
-	rep(i,r) { 
-		res *= (n - i); 
-		res /= (i + 1); 
-	} 
-	return res; 
+    ll res = 1; 
+    if (r > n - r) {
+        r = n - r; 
+    }
+    rep(i,r) { 
+        res *= (n - i); 
+        res /= (i + 1); 
+    } 
+    return res; 
 }
+
+bool isPrime(long long n)
+{
+    if (n <= 1) return false;
+    if (n <= 3) return true;
+    if (n % 2 == 0 || n % 3 == 0) return false;
+ 
+    for (int i = 5; i * i <= n; i = i + 6)
+        if (n % i == 0 || n % (i + 2) == 0)
+            return false;
+ 
+    return true;
+}
+
 
 /*-------------------------------------------------*/
 
-class Number
-{
-public:
-	ll num;
-	int x;
-	int y;
-};
-
 void solve() {
 
-	int n, x, num;
-	cin >> n >> x;
-	ll a[n];
-	vector<Number> v;
+	ll n, a, d, time = 0, ans = 0;
+	cin >> n;
+
+	vector<pll> v;
 
 	rep(i,n) {
-		cin >> a[i];
+		cin >> a >> d;
+		v.pb({a,d});
 	}
 
-	rep(i,n-1) {
-		repb(j,i+1,n) {
-			v.pb({a[i]+a[j],min(i,j)+1,max(i,j)+1});
-		}
+	sortby(v,fi);
+
+	rep(i,n) {
+		time += v[i].fi;
+		ans += (v[i].se - time);
 	}
 
-	sortby(v,num);
-
-	int l = 0, r = v.size() - 1;
-
-	while(l < r) {
-
-		ll sum = v[l].num + v[r].num;
-
-		if((v[l].x == v[r].x || v[l].y == v[r].x || v[l].x == v[r].y || v[l].y == v[r].y) && sum == x) {
-			l++;
-			continue;
-		}
-
-		if(sum == x) {
-			p4(v[l].x,v[l].y,v[r].x,v[r].y);
-			return;
-		} else if(sum > x) {
-			r--;
-		} else {
-			l++;
-		}
-		
-	}
-
-	p1("IMPOSSIBLE");
-
+	p1(ans);
 }
 
 
