@@ -67,32 +67,31 @@ bool isPrime(long long n)
 
 void solve() {
 
-	int n, x;
-	cin >> n >> x;
+	string s, t;
+	cin >> s >> t;
+	int n = s.size(), m = t.size();
 
-	int a[n];
+	int dp[n+1][m+1];
 
-	rep(i,n) {
-		cin >> a[i];
+	repe(i,n) {
+		dp[i][0] = i;
 	}
 
-	sort(a,a+n);
-	int dp[x+1];
-	// memset(dp,0,sizeof(dp));
-	dp[0] = 1;
+	repe(j,m) {
+		dp[0][j] = j;
+	}
 
-	repeb(i,1,x) {
-		dp[i] = 0;
-		rep(j,n) {
-			if(a[j] <= i) {
-				dp[i] = (dp[i] + dp[i - a[j]]) % MOD;		
+	repeb(i,1,n) {
+		repeb(j,1,m) {
+			if(s[i-1] == t[j-1]) {
+				dp[i][j] = dp[i-1][j-1];
 			} else {
-				break;
+				dp[i][j] = 1 + min(dp[i-1][j-1], min(dp[i-1][j], dp[i][j-1]));
 			}
 		}
 	}
 
-	p1(dp[x]);
+	p1(dp[n][m]);
 }
 
 

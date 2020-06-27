@@ -28,7 +28,7 @@ typedef priority_queue<ll> maxheap;
 #define sortby(v,prop) sort( v.begin( ), v.end( ), [ ]( const auto& lhs, const auto& rhs ){ return lhs.prop < rhs.prop; });
 #define rsortby(v,prop) sort( v.begin( ), v.end( ), [ ]( const auto& lhs, const auto& rhs ){ return lhs.prop > rhs.prop; });
 
-ll modPower(ll num,ll r){
+ll modPower(ll num,ll r) {
 	if(r==0) return 1;
 	if(r==1) return num%MOD;
 	ll ans=modPower(num,r/2)%MOD;
@@ -67,32 +67,55 @@ bool isPrime(long long n)
 
 void solve() {
 
-	int n, x;
-	cin >> n >> x;
+	int n, sum = 0;
+	cin >> n;
 
 	int a[n];
 
 	rep(i,n) {
 		cin >> a[i];
+		sum += a[i];
 	}
 
-	sort(a,a+n);
-	int dp[x+1];
-	// memset(dp,0,sizeof(dp));
-	dp[0] = 1;
+	bool dp[n+1][sum+1];
 
-	repeb(i,1,x) {
-		dp[i] = 0;
-		rep(j,n) {
-			if(a[j] <= i) {
-				dp[i] = (dp[i] + dp[i - a[j]]) % MOD;		
+	repe(i,sum) {
+		dp[0][i] = false;
+	}
+
+	repe(i,n) {
+		dp[i][0] = true;
+	}
+
+	repeb(i,1,n) {
+		repeb(j,1,sum) {
+			if(a[i-1] > j) {
+				dp[i][j] = dp[i-1][j];
 			} else {
+				dp[i][j] = dp[i-1][j] || dp[i-1][j-a[i-1]];
+			}
+		}
+	}
+
+	int k1,k2;
+	rfor(i,sum/2,0) {
+		if(dp[n][i]) {
+			k1 = i;
+			break;
+		}
+	}
+
+	repeb(i,sum/2,n) {
+		if(dp[n][i]) {
+			if(dp[n][i]) {
+				k2 = i;
 				break;
 			}
 		}
 	}
 
-	p1(dp[x]);
+	int ans = min(abs(sum-2*k1), abs(sum - 2*k2));
+	p1(ans);
 }
 
 

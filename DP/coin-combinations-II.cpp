@@ -71,28 +71,36 @@ void solve() {
 	cin >> n >> x;
 
 	int a[n];
-
 	rep(i,n) {
 		cin >> a[i];
 	}
 
-	sort(a,a+n);
-	int dp[x+1];
-	// memset(dp,0,sizeof(dp));
-	dp[0] = 1;
+	sort(a, a+n);
+	int dp[n][x+1];
 
-	repeb(i,1,x) {
-		dp[i] = 0;
-		rep(j,n) {
-			if(a[j] <= i) {
-				dp[i] = (dp[i] + dp[i - a[j]]) % MOD;		
+	repe(i,x) {
+		if(i % a[0] == 0) {
+			dp[0][i] = 1;
+		} else {
+			dp[0][i] = 0;
+		}
+	}
+
+	rep(i,n) {
+		dp[i][0] = 1;
+	}
+
+	repb(i,1,n) {
+		repeb(j,1,x) {
+			if(j < a[i]) {
+				dp[i][j] = dp[i-1][j];
 			} else {
-				break;
+				dp[i][j] = (dp[i-1][j] + dp[i][j-a[i]]) % MOD;
 			}
 		}
 	}
 
-	p1(dp[x]);
+	p1(dp[n-1][x]);
 }
 
 

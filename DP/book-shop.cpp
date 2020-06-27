@@ -70,29 +70,43 @@ void solve() {
 	int n, x;
 	cin >> n >> x;
 
-	int a[n];
+	int price[n+1], pages[n+1];
 
 	rep(i,n) {
-		cin >> a[i];
+		cin >> price[i+1];
 	}
 
-	sort(a,a+n);
-	int dp[x+1];
-	// memset(dp,0,sizeof(dp));
-	dp[0] = 1;
+	rep(i,n) {
+		cin >> pages[i+1];
+	}
 
-	repeb(i,1,x) {
-		dp[i] = 0;
-		rep(j,n) {
-			if(a[j] <= i) {
-				dp[i] = (dp[i] + dp[i - a[j]]) % MOD;		
+	int dp[n+1][x+1];
+
+	repe(i,n) {
+		dp[i][0] = 0;
+	}
+
+	repe(i,x) {
+		dp[0][i] = 0;
+	}
+
+	repeb(i,1,n) {
+		repeb(j,1,x) {
+			if(price[i] > j) {
+				dp[i][j] = dp[i-1][j];
 			} else {
-				break;
+				dp[i][j] = max(dp[i-1][j], pages[i] + dp[i-1][j - price[i]]);
 			}
 		}
 	}
 
-	p1(dp[x]);
+	// repe(i,n) {
+	// 	repe(j,x) {
+	// 		p0(dp[i][j]);
+	// 	}cout << "\n";
+	// }
+
+	p1(dp[n][x]);
 }
 
 
