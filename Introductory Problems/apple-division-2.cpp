@@ -27,8 +27,8 @@ typedef priority_queue<ll> maxheap;
 #define rsortv(v) sort(v.begin(),v.end(), greater<>());
 #define sortby(v,prop) sort( v.begin( ), v.end( ), [ ]( const auto& lhs, const auto& rhs ){ return lhs.prop < rhs.prop; });
 #define rsortby(v,prop) sort( v.begin( ), v.end( ), [ ]( const auto& lhs, const auto& rhs ){ return lhs.prop > rhs.prop; });
- 
-ll modPower(ll num,ll r) {
+
+ll modPower(ll num,ll r){
 	if(r==0) return 1;
 	if(r==1) return num%MOD;
 	ll ans=modPower(num,r/2)%MOD;
@@ -36,7 +36,7 @@ ll modPower(ll num,ll r) {
 		return (ans*ans)%MOD;
 	} return (((ans*ans)%MOD)*num)%MOD;
 }
- 
+
 ll nCr(ll n, ll r) { 
     ll res = 1; 
     if (r > n - r) {
@@ -48,7 +48,7 @@ ll nCr(ll n, ll r) {
     } 
     return res; 
 }
- 
+
 bool isPrime(long long n)
 {
     if (n <= 1) return false;
@@ -61,59 +61,38 @@ bool isPrime(long long n)
  
     return true;
 }
- 
- 
+
+
 /*-------------------------------------------------*/
- 
+
 void solve() {
- 
-	int n, sum = 0;
+
+	ll n, sum = 0, ans = INT_MAX;
 	cin >> n;
- 
-	int a[n];
- 
-	unordered_map<int,bool> one, two;
- 
+	ll a[n];
+
 	rep(i,n) {
 		cin >> a[i];
 		sum += a[i];
 	}
 
-	if(n == 1) {
-		p1(sum);
-		return;
-	}
- 
-	one[0] = true;
-	int ans = INT_MAX;
- 
-	repeb(i,1,n) {
-		repeb(j,1,sum) {
-			if(a[i-1] > j) {
-				if(one[j]) {
-					two[j] = true;
-					if(i == n) {
-						ans = min(ans,abs(sum - 2*j));
-					}
-				}
-			} else {
-				if(one[j] || one[j-a[i-1]]) {
-					two[j] = true;
-					if(i == n) {
-						ans = min(ans,abs(sum - 2*j));
-					}
-				}
-			}
+	ll ways = 1 << n;
+	
+	rep(i,ways) { // every possible combination
+		
+		ll s = 0;
+		rep(j,n) { // getting sum for the ith possible combination
+			if(i & 1<<j) s += a[j];		
 		}
- 
-		one = two;
-		two.clear();
+
+		ll curr = abs(sum-2*s);
+		ans = min(ans, curr);
 	}
-  
+	
 	p1(ans);
 }
- 
- 
+
+
 int main()
 {
 	fastio;
