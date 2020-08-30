@@ -55,6 +55,8 @@ int main()
 
 	ll n, m, val, budget;
 	cin >> n >> m;
+
+	// multiset so that we can store duplicate values
 	multiset<ll> ticket;
 
 	rep(i,n) {
@@ -66,12 +68,13 @@ int main()
 		
 		cin >> budget;
 
+		// smallest element which is strictly greater than budget 
 		auto it = ticket.upper_bound(budget);
 
-		if(it == ticket.begin()) { // smaller than min element
+		if(it == ticket.begin()) { // budget smaller than min element
 			p1(-1);
 		} else {
-			it--;
+			it--; // it - 1 is smaller/equal to budget, as it was smallest strictly greater element
 			p1(*it);
 			ticket.erase(it);
 		}

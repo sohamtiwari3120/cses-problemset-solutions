@@ -67,40 +67,29 @@ bool isPrime(long long n)
 
 void solve() {
 
-	ll n, sum = 0, one, two;
+	int n, ans = 1;
 	cin >> n;
 
-	ll a[n];
+	int a[n];
+	cin >> a[0];
+	
 
-	rep(i,n) {
+	int dp[n];
+	dp[0] = 1;
+
+	repb(i,1,n) {
 		cin >> a[i];
-		sum += a[i];
-	}
-
-	sort(a,a+n);
-
-	if(n==1) {
-		p1(2*sum);
-		return;
-	}
-
-	ll l = 0, h = n - 1, sum1 = 0, sum2 = 0;
-	while(l < h) {
-
-		if(h-l == 2 && sum1 == sum2) {
-			p1(sum);
-			return;
+		dp[i] = 1;
+		rfor(j,i-1,0) {
+			if(a[j] < a[i]) {
+				dp[i] = max(dp[i], 1 + dp[j]);
+			}
 		}
 
-		if(sum1 <= sum2) {
-			sum1 += a[l++];
-		} else {
-			sum2 += a[h--];
-		} 
-		// p2(l,h);
+		ans = max(ans,dp[i]);
 	}
 
-	p1(2*max(sum1,sum2));
+	p1(ans);
 }
 
 

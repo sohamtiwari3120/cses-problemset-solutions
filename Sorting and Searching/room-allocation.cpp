@@ -65,76 +65,55 @@ bool isPrime(long long n)
 
 /*-------------------------------------------------*/
 
+class Node {
+public:
+	int time;
+	int index;
+	int type;
+};
+
+bool comp(Node a, Node b) {
+	return (a.time == b.time) ? (a.type > b.type) : (a.time < b.time);
+}
+
 void solve() {
 
-	int n, st, et, curr = 0, ans = 0, k = 0, last;
+	int n, st, et;
+
 	cin >> n;
-
-	vector<pll> start, end, rooms;
-	queue<ll> nextAvailable;
-	set<ll> occupied;
-
-	map<ll,ll> roomOccupied;
-
-	nextAvailable.push(1);
+	vector<Node> v;
+	vector<int> allocated(n);
 
 	rep(i,n) {
-		ll st, et;
-		cin >> st >> et;;
-		start.pb({st,i});
-		end.pb({et,i});
+		cin >> st >> et;
+		v.pb({st,i,1});
+		v.pb({et,i,-1});
 	}
 
-	sortby(start,fi);
-	sortby(end,fi);
+	sort(v.begin(), v.end(),comp);
+	int currMax = 0;
+	queue<int> rooms;
 
-	for(auto st : start) {
+	for(auto it : v) {
 
-		for(;end[k].fi < st.fi && k < end.size();k++) {
-			curr--;
-			nextAvailable.push(roomOccupied[end[k].se]);
-			occupied.erase(roomOccupied[end[k].se]);
-		}
-
-		if(nextAvailable.empty()) {
-			int next = 1;
-			bool flag = false;
-			for(auto it : occupied) {
-				if(it != next) {
-					nextAvailable.push(next);
-					flag = true;
-					break;
-				} else {
-					next++;
-				}
+		if(it.type == 1) {
+			if(rooms.empty()) {
+				currMax++;
+				rooms.push(currMax);
 			}
-
-			if(!false) {
-				nextAvailable.push(next);
-			}
+			
+			allocated[it.index] = rooms.front();
+			rooms.pop();
+		} else {
+			rooms.push(allocated[it.index]);
 		}
-
-		// nextAvailable.push(100);
-		
-		ll room = nextAvailable.front();
-		nextAvailable.pop();
-		rooms.pb({room,st.se});
-		last = room;
-		roomOccupied[st.se] = room;
-		occupied.insert(room);
-
-		curr++;
-		ans = max(ans,curr);
 	}
 
-	sortby(rooms,se);
-
-	p1(ans);
-	for(auto it : rooms) {
-		p0(it.fi);
-	} 
+	p1(currMax);
+	rep(i,n) p0(allocated[i]);
 
 	cout << "\n";
+
 }
 
 

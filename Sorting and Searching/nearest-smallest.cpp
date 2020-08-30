@@ -5,11 +5,11 @@ using namespace std;
 #define MOD 1000000007
 #define fi first
 #define se second
-#define rep(i,n) for(int i = 0 ; i < n ; i++)
-#define repe(i,n) for(int i = 0 ; i <= n ; i++)
-#define repb(i,a,b) for(int i = a ; i < b ; i++)
-#define repeb(i,a,b) for(int i = a ; i <= b ; i++)
-#define rfor(i,n,a) for(int i = n ; i >= a ; i--)
+#define rep(i,n) for(ll i = 0 ; i < n ; i++)
+#define repe(i,n) for(ll i = 0 ; i <= n ; i++)
+#define repb(i,a,b) for(ll i = a ; i < b ; i++)
+#define repeb(i,a,b) for(ll i = a ; i <= b ; i++)
+#define rfor(i,n,a) for(ll i = n ; i >= a ; i--)
 #define pb push_back
 #define popb pop_back()
 #define endl "\n"
@@ -28,79 +28,33 @@ typedef priority_queue<ll> maxheap;
 #define sortby(v,prop) sort( v.begin( ), v.end( ), [ ]( const auto& lhs, const auto& rhs ){ return lhs.prop < rhs.prop; });
 #define rsortby(v,prop) sort( v.begin( ), v.end( ), [ ]( const auto& lhs, const auto& rhs ){ return lhs.prop > rhs.prop; });
 
-ll modPower(ll num,ll r){
-	if(r==0) return 1;
-	if(r==1) return num%MOD;
-	ll ans=modPower(num,r/2)%MOD;
-	if(r%2==0) {
-		return (ans*ans)%MOD;
-	} return (((ans*ans)%MOD)*num)%MOD;
-}
-
-ll nCr(ll n, ll r) { 
-    ll res = 1; 
-    if (r > n - r) {
-        r = n - r; 
-    }
-    rep(i,r) { 
-        res *= (n - i); 
-        res /= (i + 1); 
-    } 
-    return res; 
-}
-
-bool isPrime(long long n)
-{
-    if (n <= 1) return false;
-    if (n <= 3) return true;
-    if (n % 2 == 0 || n % 3 == 0) return false;
- 
-    for (int i = 5; i * i <= n; i = i + 6)
-        if (n % i == 0 || n % (i + 2) == 0)
-            return false;
- 
-    return true;
-}
-
-
 /*-------------------------------------------------*/
 
 void solve() {
 
-	ll n, sum = 0, one, two;
+	int n;
 	cin >> n;
+	int a[n];
 
-	ll a[n];
+	stack<int> s;
 
 	rep(i,n) {
+	
 		cin >> a[i];
-		sum += a[i];
-	}
 
-	sort(a,a+n);
-
-	if(n==1) {
-		p1(2*sum);
-		return;
-	}
-
-	ll l = 0, h = n - 1, sum1 = 0, sum2 = 0;
-	while(l < h) {
-
-		if(h-l == 2 && sum1 == sum2) {
-			p1(sum);
-			return;
+		while(!s.empty() && a[s.top()] >= a[i]) {
+			s.pop();
 		}
 
-		if(sum1 <= sum2) {
-			sum1 += a[l++];
+		if(s.empty()) {
+			p0(0);
 		} else {
-			sum2 += a[h--];
-		} 
-		// p2(l,h);
-	}
+			p0(s.top()+1);
+		}
 
-	p1(2*max(sum1,sum2));
+		s.push(i);
+	}
+	cout << "\n";
 }
 
 
