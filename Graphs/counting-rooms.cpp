@@ -31,12 +31,12 @@ typedef priority_queue<ll> maxheap;
 #define rsortby(v,prop) sort( v.begin( ), v.end( ), [ ]( const auto& lhs, const auto& rhs ){ return lhs.prop > rhs.prop; });
 
 ll modPower(ll num,ll r){
-    if(r==0) return 1;
-    if(r==1) return num%MOD;
-    ll ans=modPower(num,r/2)%MOD;
-    if(r%2==0) {
-        return (ans*ans)%MOD;
-    } return (((ans*ans)%MOD)*num)%MOD;
+	if(r==0) return 1;
+	if(r==1) return num%MOD;
+	ll ans=modPower(num,r/2)%MOD;
+	if(r%2==0) {
+		return (ans*ans)%MOD;
+	} return (((ans*ans)%MOD)*num)%MOD;
 }
 
     template <typename T1, typename T2>
@@ -97,33 +97,50 @@ int dr8[] = {0,1,1,1,0,-1,-1,-1}, dc8[] = {1,1,0,-1,-1,-1,0,1};
 
 // read once, read again, think, code 
 
+int n, m;
+
+bool safe(int i, int j) {
+	return 0 <= i && i < n && j >= 0 && j < m; 
+}
+
+void dfs(vector<string> &a, vvi &vis, int i, int j) {
+	vis[i][j] = true;
+	for(int k = 0 ; k < 4 ; k++) {
+		int nr = i + dr4[k];
+		int nc = j + dc4[k];
+		if(safe(nr,nc) && a[nr][nc] == '.' && !vis[nr][nc]) {
+			dfs(a,vis,nr,nc);
+		}
+	}
+}
+
 void solve() {
 
-    ll x, n, newLight;
-    cin >> x >> n;
+	cin >> n >> m;
+	vector<string> a(n);
 
-    multiset<int> lights, lengths;
-    lights.insert(0);
-    lights.insert(x);
-    lengths.insert(x);
+	int ans = 0;
+	rep(i,n) cin >> a[i];
 
-    rep(i,n) {
-        cin >> newLight;
-        lights.insert(newLight);
-        auto currLight = lights.find(newLight);
-        int nextLight = *next(currLight), prevLight = *prev(currLight);
-        lengths.erase(lengths.find(nextLight-prevLight));
-        lengths.insert(nextLight-newLight);
-        lengths.insert(newLight-prevLight);
-        p0(*lengths.rbegin());
-    }
-    cout << "\n";
+	vvi vis(n,vi(m,false));
+
+	for(int i = 0 ; i < n ; i++) {
+		for(int j = 0 ; j < m ; j++) {
+			if(a[i][j] == '.' && !vis[i][j]) {
+				ans++;
+				dfs(a,vis,i,j);
+			}
+		}
+	}
+
+	p1(ans);
+
 }
 
 
 int main()
 {
-    fastio;
-    solve();
-    return 0;
+	fastio;
+	solve();
+	return 0;
 }

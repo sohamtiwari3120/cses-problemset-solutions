@@ -31,12 +31,12 @@ typedef priority_queue<ll> maxheap;
 #define rsortby(v,prop) sort( v.begin( ), v.end( ), [ ]( const auto& lhs, const auto& rhs ){ return lhs.prop > rhs.prop; });
 
 ll modPower(ll num,ll r){
-    if(r==0) return 1;
-    if(r==1) return num%MOD;
-    ll ans=modPower(num,r/2)%MOD;
-    if(r%2==0) {
-        return (ans*ans)%MOD;
-    } return (((ans*ans)%MOD)*num)%MOD;
+	if(r==0) return 1;
+	if(r==1) return num%MOD;
+	ll ans=modPower(num,r/2)%MOD;
+	if(r%2==0) {
+		return (ans*ans)%MOD;
+	} return (((ans*ans)%MOD)*num)%MOD;
 }
 
     template <typename T1, typename T2>
@@ -97,33 +97,49 @@ int dr8[] = {0,1,1,1,0,-1,-1,-1}, dc8[] = {1,1,0,-1,-1,-1,0,1};
 
 // read once, read again, think, code 
 
+int n, m, u, v;
+
+void dfs(vi *adj, vi &vis, int st) {
+	vis[st] = true;
+
+	for(auto it : adj[st]) {
+		if(!vis[it]) {
+			dfs(adj,vis,it);
+		}
+	}
+}
+
 void solve() {
 
-    ll x, n, newLight;
-    cin >> x >> n;
+	cin >> n >> m;
+	vi adj[n+1], vis(n+1,false);
+    vi ans;
 
-    multiset<int> lights, lengths;
-    lights.insert(0);
-    lights.insert(x);
-    lengths.insert(x);
-
-    rep(i,n) {
-        cin >> newLight;
-        lights.insert(newLight);
-        auto currLight = lights.find(newLight);
-        int nextLight = *next(currLight), prevLight = *prev(currLight);
-        lengths.erase(lengths.find(nextLight-prevLight));
-        lengths.insert(nextLight-newLight);
-        lengths.insert(newLight-prevLight);
-        p0(*lengths.rbegin());
+	rep(i,m) {
+        cin >> u >> v;
+        adj[u].pb(v);
+        adj[v].pb(u);
     }
-    cout << "\n";
+
+	for(int i = 1 ; i <= n ; i++) {
+        if(!vis[i]) {
+            ans.pb(i);
+            dfs(adj,vis,i);
+        }
+	}
+
+    int x = ans.size()-1;
+	p1(x);
+    for(int i = 0 ; i < x ; i++) {
+        p2(ans[i],ans[i+1]);
+    }
+
 }
 
 
 int main()
 {
-    fastio;
-    solve();
-    return 0;
+	fastio;
+	solve();
+	return 0;
 }

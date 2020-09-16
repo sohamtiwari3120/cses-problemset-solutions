@@ -84,23 +84,18 @@ void solve() {
 		return;
 	}
 
-	ll l = 0, h = n - 1, sum1 = 0, sum2 = 0;
-	while(l < h) {
-
-		if(h-l == 2 && sum1 == sum2) {
-			p1(sum);
-			return;
-		}
+	ll l = 0, h = n - 1, sum1 = a[0], sum2 = a[n-1];
+	while(h-l != 1) {
 
 		if(sum1 <= sum2) {
-			sum1 += a[l++];
+			sum1 += a[++l];
 		} else {
-			sum2 += a[h--];
+			sum2 += a[--h];
 		} 
-		// p2(l,h);
 	}
 
-	p1(2*max(sum1,sum2));
+	if(h == n-1) p1(2*a[n-1]);
+	else p1(sum);
 }
 
 

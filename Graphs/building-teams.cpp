@@ -31,12 +31,12 @@ typedef priority_queue<ll> maxheap;
 #define rsortby(v,prop) sort( v.begin( ), v.end( ), [ ]( const auto& lhs, const auto& rhs ){ return lhs.prop > rhs.prop; });
 
 ll modPower(ll num,ll r){
-    if(r==0) return 1;
-    if(r==1) return num%MOD;
-    ll ans=modPower(num,r/2)%MOD;
-    if(r%2==0) {
-        return (ans*ans)%MOD;
-    } return (((ans*ans)%MOD)*num)%MOD;
+	if(r==0) return 1;
+	if(r==1) return num%MOD;
+	ll ans=modPower(num,r/2)%MOD;
+	if(r%2==0) {
+		return (ans*ans)%MOD;
+	} return (((ans*ans)%MOD)*num)%MOD;
 }
 
     template <typename T1, typename T2>
@@ -97,33 +97,61 @@ int dr8[] = {0,1,1,1,0,-1,-1,-1}, dc8[] = {1,1,0,-1,-1,-1,0,1};
 
 // read once, read again, think, code 
 
+int n, m, u, v;
+bool possible;
+
+void isBipartite(vi *adj, vi &colours, int colour, int st) {
+
+	colours[st] = colour;
+
+	for(auto it : adj[st]) {
+		if(colours[it] == colour) {
+			possible = false;
+			return;
+		}
+
+		if(colours[it] == -1) {
+			isBipartite(adj,colours,colour^1,it);
+		}
+	}
+}
+
 void solve() {
 
-    ll x, n, newLight;
-    cin >> x >> n;
+	cin >> n >> m;
+	vi adj[n];
+	rep(i,m) {
+		cin >> u >> v;
+		adj[u-1].pb(v-1);
+		adj[v-1].pb(u-1);
+	}
 
-    multiset<int> lights, lengths;
-    lights.insert(0);
-    lights.insert(x);
-    lengths.insert(x);
+	possible = true;
+	vi colours(n,-1);
 
-    rep(i,n) {
-        cin >> newLight;
-        lights.insert(newLight);
-        auto currLight = lights.find(newLight);
-        int nextLight = *next(currLight), prevLight = *prev(currLight);
-        lengths.erase(lengths.find(nextLight-prevLight));
-        lengths.insert(nextLight-newLight);
-        lengths.insert(newLight-prevLight);
-        p0(*lengths.rbegin());
-    }
-    cout << "\n";
+	rep(i,n) {
+		if(colours[i] == -1) {
+			isBipartite(adj,colours,0,i);
+			if(!possible) {
+				break;
+			}
+		}
+	}
+
+	// p1(colours);
+	if(possible) {
+		for(auto it : colours) {
+			p0(it+1);
+		} cout << "\n";
+	} else {
+		p1("IMPOSSIBLE");
+	}
 }
 
 
 int main()
 {
-    fastio;
-    solve();
-    return 0;
+	fastio;
+	solve();
+	return 0;
 }
