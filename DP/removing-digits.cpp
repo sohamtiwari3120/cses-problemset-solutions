@@ -97,47 +97,30 @@ int dr8[] = {0,1,1,1,0,-1,-1,-1}, dc8[] = {1,1,0,-1,-1,-1,0,1};
 
 // read once, read again, think, code 
 
-int binarySearch(vi &dp, int l, int h, ll x) {
+ll func(ll n, vi &dp) {
 
-	while(l <= h) {
+	if(dp[n] != INT_MAX) return dp[n];
+	ll mn = INT_MAX;
+	string s = to_string(n);
 
-		int mid = (l + h) / 2;
-		if(dp[mid] == x) {
-			return mid;
-		} else if(dp[mid] > x) {
-			h = mid - 1;
-		} else {
-			l = mid + 1;
-		}
+	for(auto c : s) {
+		if(c=='0') continue;
+		mn = min(mn, func(n - (c-'0'), dp));
 	}
 
-	return l;
+	dp[n] = 1+mn;
+	return dp[n];
 }
-
-// Iterate through every integer X of the input set and do the following:
-
-// 1. If X > last element in dp[], then append X to the end of dp. This essentialy means we have found a new largest LIS.
-// 2. Otherwise find the smallest element in dp, which is >= than X, and change it to X. Because S is sorted at any time, the element can be found using binary search in log(N).
-// Basically find insertion index of X in sorted the array dp
 
 void solve() {
 
-	ll n, len = 0, num;
+	ll n;
 	cin >> n;
-	vi dp(n);
-	cin >> num;
-	dp[0] = num, len = 1;
-	
-	rep(i,n-1) {
-		cin >> num;
-		int idx = binarySearch(dp,0,len-1,num);
-		dp[idx] = num;
-		if(idx == len) {
-			len++;
-		}
-	}
 
-	p1(len);
+	vi dp(n+1,INT_MAX);
+	dp[0] = 0, dp[1] = 1;
+	func(n,dp);
+	p1(dp[n]);
 }
 
 

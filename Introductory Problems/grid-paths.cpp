@@ -50,14 +50,14 @@ bool inRange(int x, int y) {
 
 void backtrack(int idx,int r, int c, vvb &vis, vvvi &dp) {
 
-	if(!inRange(r,c)) return;
-	p4(idx,r,c,dp[r][c][idx]);
+	if(!inRange(r,c) || vis[r][c]) return;
+	p1(ans);
 	if(idx == 48) {
 		if(r == 6 && c == 0) ans++;
 		return;
 	}
 
-	if(dp[r][c][idx] != -1) return;
+	// if(dp[r][c][idx] != -1) return;
 
 	// if(vis[r][c]) return;
 
@@ -69,10 +69,10 @@ void backtrack(int idx,int r, int c, vvb &vis, vvvi &dp) {
 			int nr = r + dr[i];
 			int nc = c + dc[i];
 			if(inRange(nr,nc) && !vis[nr][nc]) {
-				vis[nr][nc] = true;
+				// vis[nr][nc] = true;
 				backtrack(idx+1,nr,nc,vis,dp);
 				// p4(idx,nr,nc,ans);
-				vis[nr][nc] = false;
+				// vis[nr][nc] = false;
 			}
 		}
 
@@ -84,17 +84,16 @@ void backtrack(int idx,int r, int c, vvb &vis, vvvi &dp) {
 		int nc = c + dc[m[s[idx]]];
 
 		if(inRange(nr,nc) && !vis[nr][nc]) {
-			vis[nr][nc] = true;
+			// vis[nr][nc] = true;
 			backtrack(idx+1,nr,nc,vis,dp);
-			vis[nr][nc] = false;
+			// vis[nr][nc] = false;
 
 		}
-		
-		// vis[r][c] = false;
+	
 	}
 
-	dp[r][c][idx] = ans;
-	vis[r][c] = false;
+	// dp[r][c][idx] = ans;
+	// vis[r][c] = false;
 }
 /*
 ??URRRRRDDDLUULDDDLDR?URDDLLLLLURULURRUULDL?DDD?

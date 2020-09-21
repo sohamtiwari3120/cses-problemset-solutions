@@ -97,47 +97,142 @@ int dr8[] = {0,1,1,1,0,-1,-1,-1}, dc8[] = {1,1,0,-1,-1,-1,0,1};
 
 // read once, read again, think, code 
 
-int binarySearch(vi &dp, int l, int h, ll x) {
+#define vc vector<char>
+#define vvc vector<vc>
 
-	while(l <= h) {
+class Node {
+public:
+	int moves;
+	int person;
+	int i;
+	int j;
 
-		int mid = (l + h) / 2;
-		if(dp[mid] == x) {
-			return mid;
-		} else if(dp[mid] > x) {
-			h = mid - 1;
+	bool operator<(const Node &a) const {
+		
+		if(moves != a.moves) {
+			return moves < a.moves;
 		} else {
-			l = mid + 1;
+			if(person != a.person) {
+				return person < a.person;
+			} else {
+				if(i == a.i) return j < a.j;
+				else return i < a.i;
+			}
 		}
 	}
+};
 
-	return l;
+string c = "RDLU";
+int n, m, sx, sy;
+
+bool safe(int i, int j) {
+	return 0 <= i && i < n && j >= 0 && j < m; 
 }
 
-// Iterate through every integer X of the input set and do the following:
+void traceback(vvc &trace, int ex, int ey) {
 
-// 1. If X > last element in dp[], then append X to the end of dp. This essentialy means we have found a new largest LIS.
-// 2. Otherwise find the smallest element in dp, which is >= than X, and change it to X. Because S is sorted at any time, the element can be found using binary search in log(N).
-// Basically find insertion index of X in sorted the array dp
+    int currX = ex, currY = ey;
+    string path = "";
+
+    while(!(currX == sx && currY == sy)) {
+        char move = trace[currX][currY];
+        path += move;
+
+        if(move == 'L') currY++;
+        else if(move == 'R') currY--;
+        else if(move == 'D') currX--;
+        else if(move == 'U') currX++;
+    }
+
+    reverse(path.begin(), path.end());
+    p1("YES");
+    p1(path.size());
+    p1(path);
+}
 
 void solve() {
 
-	ll n, len = 0, num;
-	cin >> n;
-	vi dp(n);
-	cin >> num;
-	dp[0] = num, len = 1;
-	
-	rep(i,n-1) {
-		cin >> num;
-		int idx = binarySearch(dp,0,len-1,num);
-		dp[idx] = num;
-		if(idx == len) {
-			len++;
+	int openings = 0;
+	cin >> n >> m;
+	vector<string> a(n);
+
+	rep(i,n) cin >> a[i];
+
+	vvi vis(n,vi(m,0));
+	vvc trace(n,vc(m,' '));
+	multiset<Node> q;
+
+	for(int i = 0 ; i < n ; i++) {
+		for(int j = 0 ; j < m ; j++) {
+			if(a[i][j] == 'A') {
+				sx = i, sy = j;
+				vis[i][j] = 1;
+				q.insert({0,1,i,j});
+			} else if(a[i][j] == 'M') {
+				vis[i][j] = 2;
+				q.insert({0,0,i,j});
+			}
+
+			if(a[i][j] == '.') {
+				if(i==0||i==n-1||j==0||j==m-1) {
+					openings++;
+				}
+			}
+
+			if(a[i][j] == 'A') {
+				if(i==0||i==n-1||j==0||j==m-1) {
+					p1("YES");
+					p1("0");
+					return;
+				}
+			}
 		}
 	}
 
-	p1(len);
+	if(openings == 0) {
+		p1("NO");
+		return;
+	}
+
+
+	while(!q.empty()) {
+
+		Node x = *q.begin();
+		q.erase(x);
+
+
+		if(x.person) {
+			// p4("person:",x.moves,x.i,x.j);
+
+			if(x.i==0 || x.i == n-1 || x.j == 0 || x.j == m-1) {
+				traceback(trace,x.i,x.j);
+				return;
+			}
+
+			for(int i = 0 ; i < 4 ; i++) {
+				int nr = x.i + dr4[i];
+				int nc = x.j + dc4[i];
+				if(safe(nr,nc) && a[nr][nc] == '.' && vis[nr][nc] == 0) {
+					vis[nr][nc] = 1;
+					trace[nr][nc] = c[i];
+					q.insert({x.moves+1,x.person,nr,nc});
+				}
+			}
+		} else {
+			// p4("monster:",x.moves,x.i,x.j);
+
+			for(int i = 0 ; i < 4 ; i++) {
+				int nr = x.i + dr4[i];
+				int nc = x.j + dc4[i];
+				if(safe(nr,nc) && a[nr][nc] != '#' && vis[nr][nc] != 2) {
+					vis[nr][nc] = 2;
+					q.insert({x.moves+1,x.person,nr,nc});
+				}
+			}
+		}
+	}
+
+	p1("NO");
 }
 
 

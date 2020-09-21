@@ -97,53 +97,52 @@ int dr8[] = {0,1,1,1,0,-1,-1,-1}, dc8[] = {1,1,0,-1,-1,-1,0,1};
 
 // read once, read again, think, code 
 
-int binarySearch(vi &dp, int l, int h, ll x) {
+int n;
 
-	while(l <= h) {
-
-		int mid = (l + h) / 2;
-		if(dp[mid] == x) {
-			return mid;
-		} else if(dp[mid] > x) {
-			h = mid - 1;
-		} else {
-			l = mid + 1;
-		}
+void fill(int i, unordered_set<int> &s, int *a) {
+	
+	if(i == n-1) {
+		s.insert(a[i]); 
+		return;
 	}
 
-	return l;
+	fill(i+1,s,a);
+
+	unordered_set<int> s1;
+
+	for(auto num : s) {
+		s1.insert(num + a[i]);
+		s1.insert(num);
+	}
+
+	s1.insert(a[i]);
+	s = s1;
 }
-
-// Iterate through every integer X of the input set and do the following:
-
-// 1. If X > last element in dp[], then append X to the end of dp. This essentialy means we have found a new largest LIS.
-// 2. Otherwise find the smallest element in dp, which is >= than X, and change it to X. Because S is sorted at any time, the element can be found using binary search in log(N).
-// Basically find insertion index of X in sorted the array dp
 
 void solve() {
 
-	ll n, len = 0, num;
+	unordered_set<int> s;
 	cin >> n;
-	vi dp(n);
-	cin >> num;
-	dp[0] = num, len = 1;
+	int a[n];
+
+	rep(i,n) cin >> a[i];
+	fill(0,s,a);
 	
-	rep(i,n-1) {
-		cin >> num;
-		int idx = binarySearch(dp,0,len-1,num);
-		dp[idx] = num;
-		if(idx == len) {
-			len++;
-		}
+	p1(s.size());
+	minheap pq;
+	for(auto num : s) {
+		pq.push(num);
 	}
 
-	p1(len);
+	while(!pq.empty()) {
+		p0(pq.top());
+		pq.pop();
+	} cout << "\n";
 }
-
-
 int main()
 {
 	fastio;
+
 	solve();
 	return 0;
 }

@@ -97,47 +97,45 @@ int dr8[] = {0,1,1,1,0,-1,-1,-1}, dc8[] = {1,1,0,-1,-1,-1,0,1};
 
 // read once, read again, think, code 
 
-int binarySearch(vi &dp, int l, int h, ll x) {
-
-	while(l <= h) {
-
-		int mid = (l + h) / 2;
-		if(dp[mid] == x) {
-			return mid;
-		} else if(dp[mid] > x) {
-			h = mid - 1;
-		} else {
-			l = mid + 1;
-		}
-	}
-
-	return l;
-}
-
-// Iterate through every integer X of the input set and do the following:
-
-// 1. If X > last element in dp[], then append X to the end of dp. This essentialy means we have found a new largest LIS.
-// 2. Otherwise find the smallest element in dp, which is >= than X, and change it to X. Because S is sorted at any time, the element can be found using binary search in log(N).
-// Basically find insertion index of X in sorted the array dp
+int n, m, u, v, d;
+#define INF 1e18
 
 void solve() {
 
-	ll n, len = 0, num;
-	cin >> n;
-	vi dp(n);
-	cin >> num;
-	dp[0] = num, len = 1;
-	
-	rep(i,n-1) {
-		cin >> num;
-		int idx = binarySearch(dp,0,len-1,num);
-		dp[idx] = num;
-		if(idx == len) {
-			len++;
+	cin >> n >> m;
+
+	vector<pii> adj[n];
+
+	rep(i,m) {
+		cin >> u >> v >> d;
+		adj[u-1].pb({v-1,d});
+	}
+
+	vi dist(n,INF), vis(n,false);
+	dist[0] = 0;
+
+	multiset<pii> pq;
+	pq.insert({0,0});
+
+	while(!pq.empty()) {
+
+		pii x = *pq.begin();
+		pq.erase(x);
+
+		if(vis[x.se]) continue;
+		vis[x.se] = true;
+
+		for(auto it : adj[x.se]) {
+			if(!vis[it.fi] && dist[it.fi] > dist[x.se] + it.se) {
+				dist[it.fi] = dist[x.se] + it.se;
+				pq.insert({dist[it.fi], it.fi});
+			}
 		}
 	}
 
-	p1(len);
+	// p1(dist);
+	rep(i,n) p0(dist[i]);
+	cout << "\n";
 }
 
 

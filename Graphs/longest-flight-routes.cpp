@@ -40,55 +40,55 @@ ll modPower(ll num,ll r){
 }
 
     template <typename T1, typename T2>
-    inline std::ostream& operator << (std::ostream& os, const std::pair<T1, T2>& p)
-    {
-        return os << "(" << p.first << ", " << p.second << ")";
-    }
- 
+inline std::ostream& operator << (std::ostream& os, const std::pair<T1, T2>& p)
+{
+	return os << "(" << p.first << ", " << p.second << ")";
+}
+
     template<typename T>
-    inline std::ostream &operator << (std::ostream & os,const std::vector<T>& v)
-    {
-        bool first = true;
-        os << "[";
-        for(unsigned int i = 0; i < v.size(); i++)
-        {
-            if(!first)
-                os << ", ";
-            os << v[i];
-            first = false;
-        }
-        return os << "]";
-    }
- 
+inline std::ostream &operator << (std::ostream & os,const std::vector<T>& v)
+{
+	bool first = true;
+	os << "[";
+	for(unsigned int i = 0; i < v.size(); i++)
+	{
+		if(!first)
+			os << ", ";
+		os << v[i];
+		first = false;
+	}
+	return os << "]";
+}
+
     template<typename T>
-    inline std::ostream &operator << (std::ostream & os,const std::set<T>& v)
-    {
-        bool first = true;
-        os << "[";
-        for (typename std::set<T>::const_iterator iii = v.begin(); iii != v.end(); ++iii)
-        {
-            if(!first)
-                os << ", ";
-            os << *iii;
-            first = false;
-        }
-        return os << "]";
-    }
- 
+inline std::ostream &operator << (std::ostream & os,const std::set<T>& v)
+{
+	bool first = true;
+	os << "[";
+	for (typename std::set<T>::const_iterator iii = v.begin(); iii != v.end(); ++iii)
+	{
+		if(!first)
+			os << ", ";
+		os << *iii;
+		first = false;
+	}
+	return os << "]";
+}
+
     template<typename T1, typename T2>
-    inline std::ostream &operator << (std::ostream & os,const std::map<T1, T2>& v)
-    {
-        bool first = true;
-        os << "[";
-        for (typename std::map<T1, T2>::const_iterator iii = v.begin(); iii != v.end(); ++iii)
-        {
-            if(!first)
-                os << ", ";
-            os << *iii ;
-            first = false;
-        }
-        return os << "]";
-    }
+inline std::ostream &operator << (std::ostream & os,const std::map<T1, T2>& v)
+{
+	bool first = true;
+	os << "[";
+	for (typename std::map<T1, T2>::const_iterator iii = v.begin(); iii != v.end(); ++iii)
+	{
+		if(!first)
+			os << ", ";
+		os << *iii ;
+		first = false;
+	}
+	return os << "]";
+}
 
 int dr4[] = {0,1,0,-1}, dc4[] = {1,0,-1,0};
 int dr8[] = {0,1,1,1,0,-1,-1,-1}, dc8[] = {1,1,0,-1,-1,-1,0,1};
@@ -97,70 +97,68 @@ int dr8[] = {0,1,1,1,0,-1,-1,-1}, dc8[] = {1,1,0,-1,-1,-1,0,1};
 
 // read once, read again, think, code 
 
-int n, m, u, v; 
+vi ans;
+int n, m, a, b;
 
-bool bfs(vi *adj, vi &dist, vi &parent) {
+void dfs(vi *adj, int st, vi &child, vi &len, vi &vis, vi &reachesN) {
 
-	queue<int> q;
-	dist[1] = 0;
-	q.push(1);
+	if(st == n) {
+		len[st] = 1;
+		reachesN[st] = true;
+		return;
+	}
 
-	while(!q.empty()) {
+	vis[st] = true;
 
-		int x = q.front();
-		q.pop();
-
-		if(x == n) {
-			return true;
-		}
-
-		for(auto it : adj[x]) {
-
-			if(dist[it] == INT_MAX) {
-				dist[it] = 1 + dist[x];
-				parent[it] = x;
-				q.push(it);
-			}
+	// compute
+	for(auto it : adj[st]) {
+		if(!vis[it]) {
+			dfs(adj,it,child,len,vis,reachesN);
 		}
 	}
 
-	return false;
+	for(auto it : adj[st]) {
+
+		if(reachesN[it] && len[st] < len[it] + 1) { // longer reachable path found
+			len[st] =  len[it] + 1;
+			child[st] = it;
+			reachesN[st] = true;
+		}
+	}
 }
 
 void solve() {
 
 	cin >> n >> m;
-	vi adj[n+1];
-	vi dist(n+1,INT_MAX), parent(n+1,-1);
+	vi child(n+1,-1), len(n+1,0), adj[n+1], vis(n+1,0), reachesN(n+1,0);
 
 	rep(i,m) {
-		cin >> u >> v;
-		adj[u].pb(v);
-		adj[v].pb(u);
+		cin >> a >> b;
+		adj[a].pb(b);
 	}
 
-	if(bfs(adj,dist,parent)) {
-		p1(dist[n]+1);
-		int curr = n;
-		stack<int> s;
-		while(parent[curr] != -1) {
-			s.push(curr);
-			curr = parent[curr];
-		}
-		s.push(1);
-		while(!s.empty()) {
-			p0(s.top());
-			s.pop();
-		} cout << "\n";
-	} else {
+	dfs(adj,1,child,len,vis,reachesN);
+
+	if(reachesN[1] == 0) {
 		p1("IMPOSSIBLE");
+		return;
 	}
+
+	p1(len[1]);
+	int curr = 1;
+	while(curr != n) {
+		p0(curr);
+		curr = child[curr];
+	}
+	p1(n);
 }
 
 
 int main()
 {
 	fastio;
+	// freopen("test_input.txt","r",stdin);
+ //    freopen("output.txt","w",stdout);
 	solve();
 	return 0;
 }
