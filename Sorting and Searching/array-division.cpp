@@ -97,41 +97,60 @@ int dr8[] = {0,1,1,1,0,-1,-1,-1}, dc8[] = {1,1,0,-1,-1,-1,0,1};
 
 // read once, read again, think, code 
 
-#define INF 1e14
+ll n, k;
 
-ll productsMadeIn(ll total, vi &times) {
-	ll ans = 0;
-	for(auto time : times) {
-		ans += total/time;
-	}
+bool valid(ll x, ll *a) {
 
-	return ans;
-}
-
-// try thinking binary search if you have to find optimal value between a given range
-void solve() {
-
-	ll n, t, cnt = 0;
-	cin >> n >> t;
-
-	vi times(n);
-	ll l = 0, h = INF, ans = h;
+	int cnt = 0; // count of subarrays with sum just <= x
+	ll sum = 0;
 
 	rep(i,n) {
-		cin >> times[i];
-		h = min(h,times[i]);
+
+		if(a[i] > x) return false;
+
+		sum += a[i];
+
+		if(sum > x) { // a[j...i-1] has sum <= x
+			cnt++;
+			sum = a[i];
+		}
 	}
 
-	h *= t;
+	if(sum <= x) {
+		cnt++;
+	}
+
+	if(cnt > k) { 
+		// making these many subarrays isn't possible, hence atleast two will fuse together
+		// and their total sum would exceed x 
+		return false;
+	} else {
+		// max sum subarray can't exceed x
+		return true;
+	}
+}
+
+void solve() {
+
+	cin >> n >> k;
+
+	ll a[n], sum = 0;
+
+	rep(i,n) {
+		cin >> a[i];	
+		sum += a[i];
+	}
+
+	ll l = 1, h = sum, ans;
 
 	while(l <= h) {
 
 		ll mid = (l + h) / 2;
-		ll x = productsMadeIn(mid,times);
 
-		if(x >= t) {
-			ans = mid;
+		// check if mid is max subarray sum in array with k divisions
+		if(valid(mid,a)) {
 			h = mid - 1;
+			ans = mid;
 		} else {
 			l = mid + 1;
 		}

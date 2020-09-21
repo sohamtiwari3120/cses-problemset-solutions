@@ -97,44 +97,25 @@ int dr8[] = {0,1,1,1,0,-1,-1,-1}, dc8[] = {1,1,0,-1,-1,-1,0,1};
 
 // read once, read again, think, code 
 
-#define INF 1e14
-
-ll productsMadeIn(ll total, vi &times) {
-	ll ans = 0;
-	for(auto time : times) {
-		ans += total/time;
-	}
-
-	return ans;
-}
-
-// try thinking binary search if you have to find optimal value between a given range
 void solve() {
 
-	ll n, t, cnt = 0;
-	cin >> n >> t;
+	ll n, sum = 0, ans = 0, num;
+	cin >> n;
+	vi m(n,0);
+	m[0] = 1;
 
-	vi times(n);
-	ll l = 0, h = INF, ans = h;
+	// for a[i..j] to be divisible by k
+	// a[0...j] - a[0...i-1] should be divible by k
+	// ie: a[0...j] % k and a[0...i-1] % k should have the same value
 
 	rep(i,n) {
-		cin >> times[i];
-		h = min(h,times[i]);
+		cin >> num;
+		sum  += num;
+		m[((sum%n)+n)%n]++;
 	}
 
-	h *= t;
-
-	while(l <= h) {
-
-		ll mid = (l + h) / 2;
-		ll x = productsMadeIn(mid,times);
-
-		if(x >= t) {
-			ans = mid;
-			h = mid - 1;
-		} else {
-			l = mid + 1;
-		}
+	for(auto num : m) {
+		ans += ((num)*(num-1))/2;
 	}
 
 	p1(ans);

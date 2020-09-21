@@ -97,47 +97,34 @@ int dr8[] = {0,1,1,1,0,-1,-1,-1}, dc8[] = {1,1,0,-1,-1,-1,0,1};
 
 // read once, read again, think, code 
 
-#define INF 1e14
-
-ll productsMadeIn(ll total, vi &times) {
-	ll ans = 0;
-	for(auto time : times) {
-		ans += total/time;
-	}
-
-	return ans;
-}
-
-// try thinking binary search if you have to find optimal value between a given range
 void solve() {
 
-	ll n, t, cnt = 0;
-	cin >> n >> t;
+	ll n, k;
+	cin >> n >> k;
+	ll a[n], ans = 0;
+	rep(i,n) cin >> a[i];
 
-	vi times(n);
-	ll l = 0, h = INF, ans = h;
+	ld sum = 0;
+	rep(i,k) sum += a[i];
 
-	rep(i,n) {
-		cin >> times[i];
-		h = min(h,times[i]);
-	}
+	ll avg = round(sum/k);
+	// rep(i,k) ans += abs(a[i]-avg);
+	// p0(ans);
 
-	h *= t;
+	repb(i,k,n) {
 
-	while(l <= h) {
+		// p2(i-k,i);
+		sum += (a[i] - a[i-k]);
+		ll avg = round(sum/k);
+		
+		ans = 0;
+		rfor(j,i,i-k+1) ans += abs(a[j]-avg);
+		// p0(ans);
+		p3(sum,avg,ans);
+		
+	} 
 
-		ll mid = (l + h) / 2;
-		ll x = productsMadeIn(mid,times);
-
-		if(x >= t) {
-			ans = mid;
-			h = mid - 1;
-		} else {
-			l = mid + 1;
-		}
-	}
-
-	p1(ans);
+	cout << "\n";
 }
 
 
